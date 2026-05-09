@@ -14,7 +14,6 @@ on:
       - "Dockerfile"
       - "pyproject.toml"
       - "uv.lock"
-      - "framework/**"
       - "book_builder/**"
       - "book_summarizer/**"
       - "web/**"

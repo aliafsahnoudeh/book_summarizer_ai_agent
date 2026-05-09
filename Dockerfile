@@ -20,7 +20,9 @@ RUN pip install --no-cache-dir uv
 WORKDIR /app
 
 # Copy lockfiles first so deps layer is cached when only source changes.
-COPY pyproject.toml uv.lock ./
+# README.md is referenced by pyproject.toml's `readme = "README.md"`, so
+# hatchling needs it present at sync time when building the local package.
+COPY pyproject.toml uv.lock README.md ./
 
 # Install runtime deps. ``--frozen`` ensures we use exactly what's in
 # uv.lock — reproducible builds.
