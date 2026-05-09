@@ -1,0 +1,39 @@
+[project]
+name = "book-summarizer-ai-agent"
+version = "0.1.0"
+description = "AI agent that summarises books at four levels of detail, built on the GAME framework"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "Ali Afsah-Noudeh", email = "aliafsah1988@gmail.com" }]
+dependencies = [
+    "chromadb>=0.5",
+    "gradio>=4.0",
+    "langdetect>=1.0",
+    "litellm>=1.40",
+    "pydantic>=2.0",
+    "pypdf[image]>=4.0",  # [image] extra → Pillow, for image extraction
+    "python-dotenv>=1.0",
+    "zurvan>=0.1.0",
+]
+
+[project.scripts]
+book-summarizer = "book_summarizer.main:main"
+build-book = "book_builder.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["book_summarizer", "book_builder", "web"]
+
+[dependency-groups]
+dev = ["pytest>=8.0"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "eval: requires real LLM API keys; slow; opt-in via `pytest -m eval`",
+]
+# Default run skips eval tests; use `pytest -m eval` to include them.
+addopts = "-m 'not eval'"
