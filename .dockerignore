@@ -1,0 +1,35 @@
+# Keep the image small + private bits out.
+
+# Local-dev cruft
+.venv/
+__pycache__/
+*.py[oc]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+
+# Runtime artefacts (image gets fresh ones at startup)
+.books/
+.logs/
+
+# Secrets — must never reach a public image
+.env
+*.env
+
+# Editor / OS noise
+.vscode/
+.idea/
+.DS_Store
+
+# Tests + docs not needed at runtime
+tests/
+docs/
+.github/
+.claude/
+*.md
+!README.md
+
+# Git history
+.git/
+.gitignore

@@ -1,0 +1,66 @@
+name: Eval
+
+# Runs the LLM eval suite against real Gemini 2.5 Flash on the synthetic
+# Veridian Settlement fixture. **Manual trigger only** by design —
+# project policy is that no Gemini call happens without an explicit
+# human action (the demo app's "Summarise" button or a deliberate
+# workflow_dispatch click here). The nightly cron is commented out
+# below; in a production system with budgeting + monitoring + on-call
+# awareness, scheduled eval is reasonable and worth re-enabling.
+#
+# Required repo secret:
+#   GOOGLE_API_KEY  (Gemini 2.5 Flash free-tier key)
+#
+# To enable the secret: GitHub repo → Settings → Secrets and variables
+#                       → Actions → New repository secret
+#                       → name=GOOGLE_API_KEY, value=<your key>
+#
+# To run the eval: GitHub repo → Actions tab → "Eval" workflow
+#                  → "Run workflow" button.
+#
+# Cost shape per run (per tests/eval/conftest.py):
+#   2 note-taker + 1 composer + 1 judge = 4 LLM calls, ~30 seconds.
+
+on:
+  # ── Nightly cron is intentionally OFF ──────────────────────────────
+  # Re-enable this for production setups where automated regression
+  # detection is worth the daily LLM spend (and where budgets / alerts
+  # are wired up to catch a runaway).
+  # schedule:
+  #   - cron: "0 4 * * *"   # nightly at 04:00 UTC
+  workflow_dispatch:  # manual-only trigger from the Actions tab
+
+# Don't cancel an in-flight nightly when a new run is triggered — it's
+# better to let the scheduled run finish than to lose its signal.
+concurrency:
+  group: eval-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Sync dependencies (incl. dev group)
+        run: uv sync --all-groups
+
+      - name: Run eval suite
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        run: |
+          if [ -z "$GOOGLE_API_KEY" ]; then
+            echo "::error::GOOGLE_API_KEY secret is not set in repo settings."
+            exit 1
+          fi
+          uv run pytest -m eval -v

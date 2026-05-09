@@ -1,0 +1,19 @@
+{
+  "book_id": "veridian_settlement",
+  "title": "The Veridian Settlement: A Brief History",
+  "authors": [
+    "Test Fixture"
+  ],
+  "language": "en",
+  "total_pages": 4,
+  "source_files": [
+    "fixture.pdf"
+  ],
+  "pdf_page_ranges": [
+    {
+      "file": "fixture.pdf",
+      "start": 1,
+      "end": 4
+    }
+  ]
+}
