@@ -32,11 +32,11 @@ See [CLAUDE.md](CLAUDE.md) for the full pipeline, backend selection, chunked com
 
 ## Layout
 
-| Directory | Role |
-|---|---|
+| Directory                                               | Role                                                                                                                                                     |
+| ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [`zurvan`](https://pypi.org/project/zurvan/) (PyPI dep) | Reusable GAME-loop agent infrastructure (one `Agent` class, composable `Capability` hooks, provider-agnostic LLM bindings). Extracted from this project. |
-| [book_summarizer/](book_summarizer/) | NoteTaker → SummaryComposer pipeline (translation removed for now). CLI entry point: `book-summarizer`. |
-| [book_builder/](book_builder/) | One-time PDF → `.books/<id>/` extractor (text per page, TOC, visuals, ChromaDB index). CLI entry point: `build-book`. |
+| [book_summarizer/](book_summarizer/)                    | NoteTaker → SummaryComposer pipeline (translation removed for now). CLI entry point: `book-summarizer`.                                                  |
+| [book_builder/](book_builder/)                          | One-time PDF → `.books/<id>/` extractor (text per page, TOC, visuals, ChromaDB index). CLI entry point: `build-book`.                                    |
 
 ## Engineering highlights
 
@@ -74,6 +74,7 @@ This project defaults to free / very cheap LLMs and platforms. When a free optio
 ## Deployment
 
 Live demo: **https://huggingface.co/spaces/aliafsah1988/book_summarizer_ai_agent**
+(Username and password will be shared by request)
 
 End-to-end free-tier pipeline:
 
