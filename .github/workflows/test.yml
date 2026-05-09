@@ -1,0 +1,39 @@
+name: Tests
+
+# Runs unit + integration tests on every push and on PRs to main.
+# Eval tests (real LLM calls) are NOT run here — see eval.yml for those.
+# The default `pytest` invocation already filters out `-m eval` tests via
+# pyproject.toml's `addopts`, so no API keys are required for this job.
+
+on:
+  push:
+  pull_request:
+    branches: [main]
+
+# Cancel superseded runs on the same ref to save Actions minutes.
+concurrency:
+  group: tests-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+          # Cache key includes pyproject.toml + uv.lock content automatically.
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Sync dependencies (incl. dev group)
+        run: uv sync --all-groups
+
+      - name: Run unit + integration tests
+        run: uv run pytest -v
